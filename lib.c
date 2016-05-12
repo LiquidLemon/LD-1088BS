@@ -3,6 +3,31 @@
 const int rows[] = {8, 9, 7, 15, 16, 0, 2, 3};
 const int columns[] = {4, 5, 12, 13, 6, 14, 10, 11};
 
+int displayMap[8][8] = {
+  {1, 0, 1, 0, 1, 0, 1, 0},
+  {0, 1, 0, 1, 0, 1, 0, 1},
+  {1, 0, 1, 0, 1, 0, 1, 0},
+  {0, 1, 0, 1, 0, 1, 0, 1},
+  {1, 0, 1, 0, 1, 0, 1, 0},
+  {0, 1, 0, 1, 0, 1, 0, 1},
+  {1, 0, 1, 0, 1, 0, 1, 0},
+  {0, 1, 0, 1, 0, 1, 0, 1}
+};
+
+void refresh() {
+  int x, y;
+  for (x = 0; x < 8; ++x) {
+    digitalWrite(columns[x], LOW);
+    for (y = 0; y < 8; ++y) {
+      if (displayMap[x][y]) {
+        digitalWrite(rows[y], HIGH);
+        digitalWrite(rows[y], LOW);
+      }  
+    }
+    digitalWrite(columns[x], HIGH);
+  }
+}
+
 void setSingleLED(int x, int y) {
   int i;
   for (i = 0; i < 8; ++i) {
