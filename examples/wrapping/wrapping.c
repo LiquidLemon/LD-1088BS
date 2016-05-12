@@ -4,8 +4,8 @@ char map[8][8] = {
   {0, 0, 0, 0, 0, 0, 0, 0},
   {0, 0, 0, 1, 1, 0, 0, 0},
   {0, 0, 1, 0, 0, 1, 0, 0},
-  {0, 1, 0, 0, 0, 0, 1, 0},
-  {0, 1, 0, 0, 0, 0, 1, 0},
+  {0, 1, 0, 1, 1, 0, 1, 0},
+  {0, 1, 0, 1, 1, 0, 1, 0},
   {0, 0, 1, 0, 0, 1, 0, 0},
   {0, 0, 0, 1, 1, 0, 0, 0},
   {0, 0, 0, 0, 0, 0, 0, 0}
@@ -18,10 +18,18 @@ PI_THREAD (refresh_thread) {
 int main() {
   init();
   setMap(map);
-  invertDisplay();
+  //invertDisplay();
   if (piThreadCreate(refresh_thread) != 0) return -1;
+  int i;
+  int dir = 0;
   while (1) {
-    delay(1000);
-    scrollDisplay();
+    for (i = 0; i < 8; ++i) {
+      delay(250);
+      scrollDisplay(dir, 1);
+    }
+    if (dir < 3)
+      dir += 1;
+    else
+      dir = 0;
   }
 }

@@ -1,5 +1,10 @@
 #include <wiringPi.h>
 
+#define DIR_RIGHT 0
+#define DIR_DOWN 1
+#define DIR_LEFT 2
+#define DIR_UP 3
+
 const char rows[] = {8, 9, 7, 15, 16, 0, 2, 3};
 const char columns[] = {4, 5, 12, 13, 6, 14, 10, 11};
 
@@ -32,6 +37,13 @@ void refresh() {
     for (y = 0; y < 8; ++y) {
       if (displayBuffer[x][y]) {
         digitalWrite(rows[y], HIGH);
+      } else {
+        // A fix for random artifacts
+        digitalWrite(rows[y], LOW);
+      }
+    }
+    for (y = 0; y < 8; ++y) {
+      if (displayBuffer[x][y]) {
         digitalWrite(rows[y], LOW);
       }  
     }
@@ -67,21 +79,74 @@ void invertDisplay() {
   }
 }
 
-void scrollDisplay() {
+// Just Works(tm)
+// TODO: optimize/simplify
+void scrollDisplay(int dir, int wrap) {
   int i, j;
   char tmp[8];
-  for (i = 0; i < 8; ++i) {
-    tmp[i] = displayBuffer[7][i];
+  if (wrap) {
+    for (i = 0; i < 8; ++i) {
+      switch (dir) {
+        case DIR_RIGHT:
+          tmp[i] = displayBuffer[7][i];
+          break;
+        case DIR_DOWN:
+          tmp[i] = displayBuffer[i][7];
+          break;
+        case DIR_LEFT:
+          tmp[i] = displayBuffer[0][i];
+          break;
+        case DIR_UP:
+          tmp[i] = displayBuffer[i][0];
+          break;
+      }
+    }
   }
   
-  for (i = 7; i > 0; --i) {
-    for (j = 0; j < 8; ++j) {
-      displayBuffer[i][j] = displayBuffer[i-1][j];
-    }  
+  switch (dir) {
+    case DIR_RIGHT:
+    case DIR_DOWN:
+      for (i = 7; i > 0; --i) {
+        for (j = 0; j < 8; ++j) {
+          if (dir == DIR_RIGHT) {
+            displayBuffer[i][j] = displayBuffer[i-1][j];
+          } else {
+            displayBuffer[j][i] = displayBuffer[j][i-1];
+          }
+        }  
+      }
+      break;
+    case DIR_LEFT:
+    case DIR_UP:
+      for (i = 0; i < 8; ++i) {
+        for (j = 7; j > 0; --j) {
+          if (dir == DIR_LEFT) {
+            displayBuffer[i][j] = displayBuffer[i+1][j];
+          } else {
+            displayBuffer[j][i] = displayBuffer[j][i+1];
+          }
+        }
+      }
+      break;
   }
 
-  for (i = 0; i < 8; ++i) {
-    displayBuffer[0][i] = tmp[i];
+  if (wrap) {
+    for (i = 0; i < 8; ++i) {
+      switch (dir) {
+        case DIR_RIGHT:
+          displayBuffer[0][i] = tmp[i];
+          break;
+        case DIR_DOWN:
+          displayBuffer[i][0] = tmp[i];
+          break;
+        case DIR_LEFT:
+          displayBuffer[7][i] = tmp[i];
+          break;
+        case DIR_UP:
+          displayBuffer[i][7] = tmp[i];
+          break;
+      }
+    }
   }
 }
 
@@ -126,5 +191,6 @@ void init() {
     
     // Clear the display
     digitalWrite(columns[i], HIGH);
+    digitalWrite(rows[i], LOW);
   }
 }
