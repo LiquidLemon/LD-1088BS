@@ -14,24 +14,6 @@ char displayBuffer[8][8] = {
   {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-// Broken, I'm not sure I need this so I'm just gonna leave it here
-//
-// char displayMap[8][8];
-//
-// void swapBuffer() {
-//   int tmp[8][8];
-//   tmp = displayBuffer;
-//   displayBuffer = displayMap;
-//   displayMap = tmp;
-//   
-//   int x, y;
-//   for (x = 0; x < 8; ++x) {
-//     for (y = 0; y < 8; ++y) {
-//       displayMap[x][y] = displayBuffer[x][y];
-//     }
-//   }
-// }
-
 void setMap(char map[8][8]) {
   int x, y;
   for (x = 0; x < 8; ++x) {
