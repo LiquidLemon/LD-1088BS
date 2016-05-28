@@ -147,6 +147,22 @@ void scrollDisplay(int dir, int wrap) {
           break;
       }
     }
+  } else {
+    for (i = 0; i < 8; ++i) {
+      switch (dir) {
+        case DIR_RIGHT:
+          displayBuffer[0][i] = 0;
+          break;
+        case DIR_DOWN:
+          displayBuffer[i][0] = 0;
+          break;
+        case DIR_LEFT:
+          displayBuffer[7][i] = 0;
+          break;
+        case DIR_UP:
+          displayBuffer[i][7] = 0;
+      }
+    }
   }
 }
 
