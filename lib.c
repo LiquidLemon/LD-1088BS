@@ -42,6 +42,7 @@ void refresh() {
         digitalWrite(rows[y], LOW);
       }
     }
+    delay(2);
     for (y = 0; y < 8; ++y) {
       if (displayBuffer[x][y]) {
         digitalWrite(rows[y], LOW);
